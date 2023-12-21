@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require('express')
 const app = express()
 const cors = require('cors');
@@ -35,6 +35,43 @@ async function run() {
             const result = await tasksCollection.insertOne(task);
             res.send(result);
         });
+        // get all my tasks
+        app.get("/myTasks/:email", async (req, res) => {
+            const email = req.params.email;
+            const result = await tasksCollection.find({ email:email }).toArray();
+            res.send(result);
+        });
+
+
+        // todo status catagory api
+        app.get("/toDo/:email", async (req, res) => {
+            const email = req.params.email;
+
+            const result = await tasksCollection.find({ email:email, status: "to-do" }).toArray();
+            res.send(result);
+        });
+        // ongoing status category api
+        app.get("/ongoing/:email", async (req, res) => {
+            const email = req.params.email;
+
+            const result = await tasksCollection.find({ email:email, status: "ongoing" }).toArray();
+            res.send(result);
+        });
+        // completed status category api
+        app.get("/completed/:email", async (req, res) => {
+            const email = req.params.email;
+
+            const result = await tasksCollection.find({ email:email, status: "completed" }).toArray();
+            res.send(result);
+        });
+
+
+        // Delete from my tasks
+        app.delete("/task/:id", async (req, res) => {
+            const id = req.params.id;
+            const result = await tasksCollection.deleteOne({ _id: new ObjectId(id) });
+            res.send(result);
+            });
 
 
 
