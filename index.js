@@ -74,6 +74,35 @@ async function run() {
             });
 
 
+        // Update food 
+        app.put('/myTask/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) };
+            const options = { upsert: true };
+            const updatedTask = req.body;
+            const newUpdatedTask = {
+                $set: {
+                    title: updatedTask.title,
+                    description: updatedTask.description,
+                    deadline: updatedTask.deadline,
+                    status: updatedTask.status,
+                    priority: updatedTask.priority,
+                    email: updatedTask.email,
+                    
+                }
+            }
+            const result = await tasksCollection.updateOne(filter, newUpdatedTask, options)
+            res.send(result)
+        })
+
+        // GET one task
+        app.get('/myTask/:id', async (req, res) => {
+            const id = req.params.id;
+            const result = await tasksCollection.findOne({ _id: new ObjectId(id) });
+            res.send(result);
+        });
+
+
 
 
 
